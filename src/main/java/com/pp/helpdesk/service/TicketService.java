@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,11 +46,8 @@ public class TicketService {
     public List<Ticket> getByServiceman() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User loggedUser = userRepository.findByUserName(userDetails.getUsername()).orElseThrow(RuntimeException::new);
-        if (loggedUser.getRoles().stream().anyMatch(role -> role.getName().equals(ERole.ROLE_ADMIN))) {
-            return ticketRepository.findByServiceman(loggedUser);
-        } else {
-            return new ArrayList<>();
-        }
+
+        return ticketRepository.findByServiceman(loggedUser);
     }
 
     public void close(Long id) {
@@ -78,4 +74,5 @@ public class TicketService {
             ticketRepository.save(ticketFromDb);
         }
     }
+
 }
